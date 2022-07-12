@@ -1,0 +1,7 @@
+node_modules
+data
+/package-lock.json
+
+/dist/*
+!/dist/pages
+!/dist/img
