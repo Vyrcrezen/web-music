@@ -1,10 +1,10 @@
 import { TemplateReader } from "./TemplateReader";
-import { MusicDataType } from "../../models/musicDataType";
 import { verifyElement } from "../../util/verifyElement";
 import { ChildElements } from "../../models/musicCard/childElements";
 import { ElementGroup } from "../../models/elementGroup";
 import { MusicCardElementIds } from "../../models/musicCard/MusicCardElementIds";
 import { TagButtonElement } from "./tagButtonElement";
+import { MusicDataType } from "../../models/frontend/musicDataValidatable";
 
 
 
@@ -32,16 +32,16 @@ export class MusicCardElement extends TemplateReader<HTMLElement, HTMLElement> i
             sourceId: "#mcard-template-source",
         });
 
-        this.setElementIds(this.musicData.id);
+        this.setElementIds(this.musicData.id as string);
 
-        this.tagButtonElements = this.generateTagButtonElements(this.musicData.tags);
+        this.tagButtonElements = this.generateTagButtonElements(this.musicData.tags.split(','));
         this.setTags();
 
         this.setTitle(this.musicData.title);
         this.setAuthor(this.musicData.artist);
-        this.setLabelTheme(this.musicData.coverImageTheme);
+        this.setLabelTheme('dark');
         this.setAudioSource(this.musicData.musicBlob);
-        this.setCoverImg(this.musicData.coverImageBlob);
+        this.setCoverImg(this.musicData.imageBlob);
         this.setSource(this.musicData.link);
 
         this.attachToHost(hostElementId, "beforeend");
@@ -62,8 +62,8 @@ export class MusicCardElement extends TemplateReader<HTMLElement, HTMLElement> i
         childElements = {
             coverImageDiv: verifyElement<HTMLDivElement>(coverImageDiv, HTMLDivElement.prototype, 'Mcard cover image container'),
             label: verifyElement<HTMLDivElement>(label, HTMLDivElement.prototype, 'Mcard label container'),
-            title: verifyElement<HTMLHeadingElement>(title, HTMLHeadingElement.prototype, 'Mcard title header'),
-            author: verifyElement<HTMLHeadingElement>(author, HTMLHeadingElement.prototype, 'Mcard author header'),
+            title: verifyElement<HTMLHeadingElement>(title, HTMLHeadingElement.prototype, 'Mcard title span'),
+            author: verifyElement<HTMLHeadingElement>(author, HTMLHeadingElement.prototype, 'Mcard author span'),
             audio: verifyElement<HTMLAudioElement>(audio, HTMLAudioElement.prototype, 'Mcard audio element'),
             audioSrc: verifyElement<HTMLSourceElement>(audioSrc, HTMLSourceElement.prototype, 'Mcard audio source element'),
             tags: verifyElement<HTMLDivElement>(tags, HTMLDivElement.prototype, 'Mcard tags container'),
@@ -77,7 +77,7 @@ export class MusicCardElement extends TemplateReader<HTMLElement, HTMLElement> i
         let tagElements: TagButtonElement[] = new Array<TagButtonElement>;
 
         tagNames.forEach((tagItem, tagIndex) => {
-            tagElements.push(new TagButtonElement(tagItem, this.musicData.id, `${tagIndex}`))
+            tagElements.push(new TagButtonElement(tagItem, this.musicData.id as string, `${tagIndex}`))
         });
 
         return tagElements;

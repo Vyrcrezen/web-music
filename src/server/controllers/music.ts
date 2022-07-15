@@ -2,10 +2,11 @@ import { RequestHandler } from "express";
 import * as path from 'path';
 import { MusicDataType as oldMusicType } from "../../models/musicDataType";
 import { readFileAsBlob } from '../../util/readFileAsBlob';
-import { MusicDataType } from "../../models/frontend/musicDataBase";
-import { MusicDataDb } from "../db/musicDataDb";
+import { MusicDataType } from "../../models/frontend/musicDataValidatable";
+import { NewMusic } from "../db/newMusic";
 import { validate } from "class-validator";
-import { MusicTable } from "../db/musicTable";
+import { ReadMusic } from "../db/readMusic";
+// import { MusicTable } from "../db/musicTable";
 // import { MysqlConnection } from "../db/mysqlConnection";
 
 const reqData: oldMusicType[] = [];
@@ -63,7 +64,25 @@ reqData.push(new oldMusicType(
 
 ));
 
-// reqData.push(new MusicData(
+reqData.push(new oldMusicType(
+    '1656981079849',
+    1656981079849,
+    'Midnight',
+    0,
+    'na',
+    "na",
+    'na',
+    "na",
+    "na",
+    readFileAsBlob(path.join(__dirname, '../../../data/MusicCard/1656981079849/music.mp3')),
+    readFileAsBlob(path.join(__dirname, '../../../data/MusicCard/1656981079849/cover.jpg')),
+    'dark',
+    ["chill"],
+    "https://soundcloud.com/argofox/rewayde-attraction"
+
+));
+
+// reqData.push(new MusicData( 
 //     '1656981089848',
 //     1656981089848,
 //     'Midnight',
@@ -87,23 +106,39 @@ export const newMusicUpload: RequestHandler<{}, {}, {musicData: MusicDataType}, 
 
     if (!req.session.passport?.user?.id) { res.status(401).json({ info: 'User id not found!' }); }
     
-    const musicDataDb = new MusicDataDb(req.body.musicData, `${req.session.passport?.user?.id}`);
-    const validationError = await validate(musicDataDb);
+    const newMusic = new NewMusic(req.body.musicData, `${req.session.passport?.user?.id}`, path.join(__dirname, '../../../data/MusicCard'));
+    const validationError = await validate(newMusic);
 
     if (validationError.length > 0) {
         res.status(401).json({ info: validationError });
     }
 
-    console.log(musicDataDb.getDbData().tags);
+    // console.log(newMusic.getPreparedData().tags);
 
-    console.log( MusicTable.getInstance().getInsertTags([musicDataDb.getDbData().tags]) );
+    // console.log( MusicTable.getInstance().getInsertTags([newMusic.getDbData().tags]) );
+    // console.log( await MusicTable.getInstance().getInsertMusic(newMusic.getPreparedData()) );
+
+    // console.log( await MusicTable.getInstance().insertMusic(newMusic.getPreparedData()) );
+
+    // console.log( await MusicTable.getInstance().getTagIdByName('techno') );
+
+    await newMusic.saveNewMusic();
+    console.log(newMusic.getPreparedData());
 
     res.status(201).json({ message: 'Recieved!' });
 }
 
-export const getMusicData: RequestHandler<{}, {}, {}, {tags: string}>= (req, res) => {
+export const getMusicData: RequestHandler<{}, {}, {}, {tags: string}>= async (req, res) => {
+
+    const readMusic = new ReadMusic(path.join(__dirname, '../../../data/MusicCard'));
+
+    // console.log(await readMusic.getAllMusic());
+
+    const musicResult = await readMusic.getAllMusic();
+
     console.log(req.query.tags);
-    res.status(201).json(reqData);
+    // res.status(201).json(reqData);
+    res.status(201).json(musicResult);
 }
 
 // let mysqlConnection = MysqlConnection.getInstance();

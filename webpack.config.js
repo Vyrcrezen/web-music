@@ -2,8 +2,10 @@ const path = require('path');
 
 module.exports = {
     mode: 'development',
+    // mode: 'production',
     entry: {
         "fetchMusicCards": './src/frontend/fetchMusicCards.ts',
+        "musicCardDeck": './src/frontend/musicDeck/index.tsx'
     },
     output: {
         filename: '[name].js',
@@ -13,13 +15,13 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.ts$/,
+                test: /\.(ts|tsx)$/,
                 use: 'ts-loader',
                 exclude: /node_modules/
             }
         ]
     },
     resolve: {
-        extensions: ['.ts', '.js']
+        extensions: ['.tsx', '.ts', '.js']
     }
 };

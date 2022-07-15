@@ -16,6 +16,7 @@ const app = express();
 const authPassport = AuthPassport.getInstance();
 
 app.use(express.static(path.join(__dirname, '../../dist/pages')));
+app.use(express.static(path.join(__dirname, '../../dist/css')));
 app.use(express.static(path.join(__dirname, '../../dist/frontend')));
 app.use(express.static(path.join(__dirname, '../../dist/img')));
 app.use('/bootstrap',express.static(path.join(__dirname, '../../node_modules/bootstrap/dist')));

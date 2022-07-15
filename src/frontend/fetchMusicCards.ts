@@ -1,8 +1,7 @@
 // import { MusicData } from '../../src/server/models/musicData';
-import { MusicDataType } from "../models/musicDataType";
-import { MusicCardElement } from "./musicCard/musicCardElement";
+// import { MusicCardElement } from "./musicCard/musicCardElement";
 import { loadFileToElement } from '../util/loadFileToElement';
-import { MusicDataBase } from '../models/frontend/musicDataBase';
+import { MusicDataValidatable } from '../models/frontend/musicDataValidatable';
 import { loadFileAsBlob } from "../util/loadFileAsBlob";
 import { validate } from "class-validator";
 
@@ -24,19 +23,19 @@ fetch('/user/loginTest', {
     .catch((err) => { console.log(err); });
 
 
-const btnMusicCards = document.getElementById('fetch-articles-button') as HTMLButtonElement;
+// const btnMusicCards = document.getElementById('fetch-articles-button') as HTMLButtonElement;
 
-btnMusicCards.addEventListener('click', () => {
-    fetch('music/music-cards?tags=techno,chill')
-    .then(data => data.json())
-    .then((data: MusicDataType[]) => {
-        console.log(data);
-        data.forEach(MusicDataType => {
-            new MusicCardElement('mcard-template', 'mcard-container', MusicDataType);
-        });
-    })
-    .catch( (err: Error) => console.log(err));
-});
+// btnMusicCards.addEventListener('click', () => {
+//     fetch('music/music-cards?tags=techno,chill')
+//     .then(data => data.json())
+//     .then((data: MusicDataType[]) => {
+//         console.log(data);
+//         data.forEach(MusicDataType => {
+//             new MusicCardElement('mcard-template', 'mcard-container', MusicDataType);
+//         });
+//     })
+//     .catch( (err: Error) => console.log(err));
+// });
 
 // -----------------------
 // ---- Registration -----
@@ -152,7 +151,7 @@ mMusicUploadForm.addEventListener('submit', async (event) => {
     const musicFilePromises: Promise<string>[] = [loadFileAsBlob('music-upload-cover-input'), loadFileAsBlob('music-upload-music-input')];
     const musicBlobData = await Promise.all(musicFilePromises);
 
-    const newMusicData = new MusicDataBase(
+    const newMusicData = new MusicDataValidatable(
         {
             imageBlob: musicBlobData[0],
             musicBlob: musicBlobData[1],
@@ -161,11 +160,10 @@ mMusicUploadForm.addEventListener('submit', async (event) => {
             artist: (document.getElementById('music-upload-music-artist') as HTMLInputElement).value,
             tags: (document.getElementById('music-upload-music-tags') as HTMLInputElement).value,
             album: (document.getElementById('music-upload-music-album') as HTMLInputElement).value,
-            label: (document.getElementById('music-upload-music-label') as HTMLInputElement).value,
+            record_label: (document.getElementById('music-upload-music-label') as HTMLInputElement).value,
             publisher: (document.getElementById('music-upload-music-publisher') as HTMLInputElement).value,
             price: (document.getElementById('music-upload-price-amount') as HTMLInputElement).value,
             currency: (document.getElementById('music-upload-music-price-currency') as HTMLInputElement).value,
-
         }
     );
 

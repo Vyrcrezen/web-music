@@ -9,7 +9,9 @@ export function parseBlobMeta(blobString: string) {
 
     const blobMeta = {
         type: blobHeader.substring(0, blobHeader.indexOf(';')),
-        encoding: blobHeader.substring(blobHeader.indexOf(';')+1)
+        extension: blobHeader.substring(blobHeader.indexOf('/')+1, blobHeader.indexOf(';')),
+        encoding: blobHeader.substring(blobHeader.indexOf(';')+1) as BufferEncoding,
+        full: blobString.substring(0, blobString.indexOf(',')+1)
     }
 
     return blobMeta;

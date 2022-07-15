@@ -11,7 +11,10 @@
     <script language="javascript" src="/bootstrap/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
 
+    <link rel="stylesheet" href="./musicCardElement.css">
+    <link rel="stylesheet" href="./vyCommon.css">
     <script src="./fetchMusicCards.js" defer></script>
+    <script src="./musicCardDeck.js" defer></script>
 </head>
 
 <body>
@@ -22,7 +25,7 @@
             <button id="fetch-articles-button" type="button"
                 style="margin: 0 auto; justify-content: center;">Fetch</button>
         </div>
-        <div id="mcard-container" class="d-flex flew-direction-row flex-wrap"
+        <div id="react-music-deck" class="d-flex flew-direction-row flex-wrap"
             style="border: 1px solid black; width: fit-content; padding: 10px;">
         </div>
     </section>
@@ -30,7 +33,8 @@
     <section class="d-flex flex-column m-4" style="width: fit-content; border: 1px solid black;">
         <div class="d-flex flex-row">
             <div class="d-flex flex-column align-self-end justify-content-center m-5">
-                <form id="user-reg-form" class="d-flex flex-column" style="width: 20rem;" action="/user/register" method="post">
+                <form id="user-reg-form" class="d-flex flex-column" style="width: 20rem;" action="/user/register"
+                    method="post">
                     <input type="text" name="username" placeholder="username" id="user-reg-form-username">
                     <input type="password" name="password" placeholder="password" id="user-reg-form-password">
                     <input type="email" name="email" placeholder="email" id="user-reg-form-email">
@@ -39,14 +43,16 @@
             </div>
             <div class="d-flex flex-column align-self-end m-5">
                 <h5 id="user-login-text">Login here</h3>
-                <form id="user-login-form" class="d-flex flex-column" style="width: 20rem;" action="/user/login" method="post">
-                    <input type="text" name="username" placeholder="username" id="user-login-form-username">
-                    <input type="password" name="password" placeholder="password" id="user-login-form-password">
-                    <button type="submit">Login</button>
-                </form>
+                    <form id="user-login-form" class="d-flex flex-column" style="width: 20rem;" action="/user/login"
+                        method="post">
+                        <input type="text" name="username" placeholder="username" id="user-login-form-username">
+                        <input type="password" name="password" placeholder="password" id="user-login-form-password">
+                        <button type="submit">Login</button>
+                    </form>
             </div>
             <div class="d-flex flex-column align-self-end m-5">
-                <form id="user-logout-form" class="d-flex flex-column" style="width: 20rem;" action="/user/logout" method="post">
+                <form id="user-logout-form" class="d-flex flex-column" style="width: 20rem;" action="/user/logout"
+                    method="post">
                     <button type="submit">Logout</button>
                 </form>
             </div>
@@ -54,7 +60,7 @@
 
         <div class="d-flex flex-column align-items-center mt-5">
             <h5 id="login-test-text">Please click this button as soon as you are able!</h3>
-            <button id="login-test-btn" class="my-2 py-1 px-3" type="button">It's me</button>
+                <button id="login-test-btn" class="my-2 py-1 px-3" type="button">It's me</button>
         </div>
     </section>
 
@@ -64,7 +70,7 @@
                 <div>
                     <div class="d-flex flex-column align-items-center">
                         <h6>Cover image</h6>
-                        <img id="music-upload-cover-image" src="" alt="" style="width: 10rem; height: 10rem;" >
+                        <img id="music-upload-cover-image" src="" alt="" style="width: 10rem; height: 10rem;">
                         <input type="file" name="cover-image" id="music-upload-cover-input" required>
                     </div>
                     <hr>
@@ -80,19 +86,23 @@
                 <div class="container" style="width: 26rem;">
                     <div class="row m-1">
                         <span class="col-4">Title*: </span>
-                        <input class="col-8" type="text" name="music-upload-music-title" id="music-upload-music-title" required>
+                        <input class="col-8" type="text" name="music-upload-music-title" id="music-upload-music-title"
+                            required>
                     </div>
                     <div class="row m-1">
                         <span class="col-4">Link*: </span>
-                        <input class="col-8" type="text" name="music-upload-music-link" id="music-upload-music-link" required>
+                        <input class="col-8" type="text" name="music-upload-music-link" id="music-upload-music-link"
+                            required>
                     </div>
                     <div class="row m-1">
                         <span class="col-4">Artist*: </span>
-                        <input class="col-8" type="text" name="music-upload-music-artist" id="music-upload-music-artist" required>
+                        <input class="col-8" type="text" name="music-upload-music-artist" id="music-upload-music-artist"
+                            required>
                     </div>
                     <div class="row m-1">
                         <span class="col-4">Tags*: </span>
-                        <input class="col-8" type="text" name="music-upload-music-tags" id="music-upload-music-tags" required>
+                        <input class="col-8" type="text" name="music-upload-music-tags" id="music-upload-music-tags"
+                            required>
                     </div>
                     <div class="row m-1">
                         <span class="col-4">Album: </span>
@@ -104,12 +114,14 @@
                     </div>
                     <div class="row m-1">
                         <span class="col-4">Publisher: </span>
-                        <input class="col-8" type="text" name="music-upload-music-publisher" id="music-upload-music-publisher">
+                        <input class="col-8" type="text" name="music-upload-music-publisher"
+                            id="music-upload-music-publisher">
                     </div>
                     <div class="row m-1">
                         <span class="col-4">Price: </span>
                         <div class="col-8 p-0 d-flex flex-row">
-                            <input class="w-75" type="number" name="music-upload-music-price-amount" id="music-upload-price-amount">
+                            <input class="w-75" type="number" name="music-upload-music-price-amount"
+                                id="music-upload-price-amount">
                             <select name="music-upload-music-price-currency" id="music-upload-music-price-currency">
                                 <option value="HUF">HUF</option>
                                 <option value="EUR">EUR</option>
@@ -124,43 +136,104 @@
         </form>
     </section>
 
-    <template id="mcard-template">
+    <!-- <template id="mcard-template">
         <div class="m-3">
             <div class="card justify-content-center p-2"
                 style="height: fit-content; width: 318px; background-color: rgb(236, 236, 227);">
+                <div id="mcard-template-label" class="d-flex rounded p-1 justify-content-between">
+                    <h5 id="mcard-template-title" class="text-start">title</h5>
+                    <button class="btn p-1"><img src="./svg/heart-empty.svg" alt=""></button>
+                </div>
                 <div id="mcard-template-img-container" class="align-self-center rounded"
-                    style="background-image: url(./1656711661616/cover.jpg); background-position: center; background-size: cover; width: 300px; height: 300px;">
-                    <div id="mcard-template-label" class="rounded p-2"
-                        style="background-color: rgba(202, 202, 202, 0.5);">
-                        <h5 id="mcard-template-title" class="text-center">title</h5>
-                        <h6 id="mcard-template-author" class="card-title text-end mb-0 me-3">author</h6>
-                    </div>
+                    style="background-image: url(./1656711661616/cover.jpg); background-position: center; background-size: contain; background-repeat: no-repeat; width: 300px; height: 250px;">
                 </div>
                 <audio id="mcard-template-audio" class="align-self-center" loop controls>
-                    <source id="mcard-template-audio-source" src="./1656711661616/music.mp3" type="audio/mpeg" >
+                    <source id="mcard-template-audio-source" src="./1656711661616/music.mp3" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
+                Author: <h6 id="mcard-template-author" class="card-title mb-0 me-3">author</h6>
+                <hr>
                 <div id="mcard-template-tags" class="card-body" style="height: 96px; overflow: auto">
                     tags:
-                    <span class="rounded-pill py-1 px-2" style="background-color: #bec4a8;">Electronic</span>
-                    <span class="rounded-pill py-1 px-2" style="background-color: #bec4a8;">Chill</span>
+                    <span class="rounded-pill py-1 px-2 vy-bg-dark-beige">Electronic</span>
+                    <span class="rounded-pill py-1 px-2 vy-bg-dark-beige">Chill</span>
                 </div>
                 <div class="card-footer d-flex justify-content-between align-items-center">
-                    <p class="card-text m-0"><a id="mcard-template-source"
-                            href="https://soundcloud.com/argofox/phlex-light-me-up" target="_blank">Source</a></p>
-                    <button class="btn p-1"><img src="./svg/heart-empty.svg" alt=""></button>
+                    <p class="card-text m-0">
+                        <a id="mcard-template-source" href="https://soundcloud.com/argofox/phlex-light-me-up"
+                            target="_blank">Source</a>
+                    </p>
+                    <span class="align-self-end">Uploader:</span>
+
                 </div>
             </div>
         </div>
     </template>
-    
+
     <template id="mcard-tag-template">
         <div>
-            <button id="mcard-tag-template-button" type="button" class="rounded-pill border-0 m-1 py-1 px-2" style="background-color: #bec4a8;">
+            <button id="mcard-tag-template-button" type="button" class="rounded-pill border-0 m-1 py-1 px-2"
+                style="background-color: #bec4a8;">
                 Tag
             </button>
         </div>
-    </template>
+    </template> -->
+
+    <!-- <div class="m-3">
+        
+        <div class="card vy-music-card justify-content-center p-2">
+            
+            <div id="mcard-template-label" class="d-flex rounded p-1 justify-content-between vy-bg-white">
+                <span id="mcard-template-title" class="fs-5 text-start">がっこうぐらし!</span>
+                <button class="btn p-1"><img src="./svg/heart-empty.svg" alt=""></button>
+            </div>
+            
+            <div id="mcard-template-img-container" class="w-100 align-self-center vy-border-dark-beige vy-music-card-bg-image" style="background-image: url(./28/cover.jpg); ">
+                <div class="d-flex justify-content-center h-100 w-100 vy-backdrop-blur-strong">
+                    <img class="h-100 vy-fit-contain" src="./28/cover.jpg" alt="card-image-がっこうぐらし!" title="がっこうぐらし!">
+                </div>
+            </div>
+            
+            <audio id="mcard-template-audio" class="align-self-center" loop controls>
+                <source id="mcard-template-audio-source" src="./28/music.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            
+            <table class="table table-sm m-1 ps-2">
+                <tbody>
+                  <tr>
+                    <td class="fs-small">Author:</td>
+                    <td class="text-start">Author name</td>
+                  </tr>
+                  <tr>
+                    <td class="fs-small">Label:</td>
+                    <td class="text-start">Label name</td>
+                  </tr>
+                </tbody>
+            </table>
+            
+            <ul id="mcard-template-tags" class="card-body p-1 my-1" style="height: 72px; overflow: auto">
+                <li class="d-inline-block rounded-pill fs-small mb-1 py-1 px-2 vy-bg-dark-beige">Electronic</li>
+                <li class="d-inline-block rounded-pill fs-small mb-1 py-1 px-2 vy-bg-dark-beige">Chill</li>
+                <li class="d-inline-block rounded-pill fs-small mb-1 py-1 px-2 vy-bg-dark-beige">Electronic</li>
+                <li class="d-inline-block rounded-pill fs-small mb-1 py-1 px-2 vy-bg-dark-beige">Chill</li>
+                <li class="d-inline-block rounded-pill fs-small mb-1 py-1 px-2 vy-bg-dark-beige">Electronic</li>
+                <li class="d-inline-block rounded-pill fs-small mb-1 py-1 px-2 vy-bg-dark-beige">Chill</li>
+            </ul>
+            
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <p class="card-text m-0">
+                    <a  id="mcard-template-source"
+                        href="https://soundcloud.com/argofox/phlex-light-me-up"
+                        target="_blank"
+                    >
+                        Source
+                    </a>
+                </p>
+                <small class="align-self-end">Uploader: <a href="#">Midnight</a></small>
+            </div>
+        </div>
+    </div> -->
 
 </body>
 
