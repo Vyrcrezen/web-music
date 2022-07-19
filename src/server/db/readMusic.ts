@@ -46,7 +46,7 @@ export class ReadMusic  {
                     title: dataSet.title,
                     tags: pairedTagNames.join(','),
                     uploader_name: uploader_name,
-                    id: dataSet.id.toString()
+                    id: dataSet.id
                 }
 
                 musicData.push(musicTypeSet);

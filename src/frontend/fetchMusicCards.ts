@@ -162,7 +162,7 @@ mMusicUploadForm.addEventListener('submit', async (event) => {
             album: (document.getElementById('music-upload-music-album') as HTMLInputElement).value,
             record_label: (document.getElementById('music-upload-music-label') as HTMLInputElement).value,
             publisher: (document.getElementById('music-upload-music-publisher') as HTMLInputElement).value,
-            price: (document.getElementById('music-upload-price-amount') as HTMLInputElement).value,
+            price: +(document.getElementById('music-upload-price-amount') as HTMLInputElement).value,
             currency: (document.getElementById('music-upload-music-price-currency') as HTMLInputElement).value,
         }
     );
@@ -193,6 +193,7 @@ mMusicUploadForm.addEventListener('submit', async (event) => {
 
     
 });
+
 
 // const musicCardTemplate = document.getElementById('mcard-template') as HTMLTemplateElement;
 // const musicCardFragment = document.importNode(musicCardTemplate.content, true);

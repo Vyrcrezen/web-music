@@ -9,8 +9,10 @@ function Main() {
     const fetchMusicBtn = document.getElementById('fetch-articles-button') as HTMLButtonElement;
 
     fetchMusicBtn.addEventListener('click', () => {
-        fetch('music/music-cards?tags=techno,chill')
+        console.log('fetching');
+        fetch('/music/music-cards?tags=techno,chill')
         .then(data => data.json())
+        .then(data => { console.log(data); return data; })
         .then((data: MusicDataType[]) => {
             console.log(data);
             setMusicDataSets(data);

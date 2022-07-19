@@ -61,9 +61,7 @@ CREATE TABLE `music` (
   `album` varchar(64),
   `link` varchar(128),
   `num_played` integer unsigned,
-  `avg_rating` double,
-  `price` double,
-  `currency` varchar(3)
+  `avg_rating` double
 );
 
 ALTER TABLE `tag_pairing` ADD FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`);

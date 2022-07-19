@@ -63,10 +63,14 @@ export class AuthPassport {
         // After being done with our strategy, this method uploads the second argument into the session table
         // Also, done's second argument is passed forward to the request's session.passport property
         this.passport.serializeUser((session: any, done) => {
+            console.log('serializeUser');
+            console.log(session);
             done(null, session);
         });
 
         this.passport.deserializeUser((session: any, done) => {
+            console.log('deserializeUser');
+            console.log(session);
             done(null, session);
         });
     }

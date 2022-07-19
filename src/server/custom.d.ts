@@ -5,7 +5,7 @@ declare module 'express-session' {
         passport?: {
             user?: {
                 authenticated: boolean,
-                id: string | number
+                id: string
             }
         };
     }

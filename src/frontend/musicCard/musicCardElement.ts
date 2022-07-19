@@ -32,7 +32,7 @@ export class MusicCardElement extends TemplateReader<HTMLElement, HTMLElement> i
             sourceId: "#mcard-template-source",
         });
 
-        this.setElementIds(this.musicData.id as string);
+        this.setElementIds(`${this.musicData.id}`);
 
         this.tagButtonElements = this.generateTagButtonElements(this.musicData.tags.split(','));
         this.setTags();
@@ -77,7 +77,7 @@ export class MusicCardElement extends TemplateReader<HTMLElement, HTMLElement> i
         let tagElements: TagButtonElement[] = new Array<TagButtonElement>;
 
         tagNames.forEach((tagItem, tagIndex) => {
-            tagElements.push(new TagButtonElement(tagItem, this.musicData.id as string, `${tagIndex}`))
+            tagElements.push(new TagButtonElement(tagItem, `${this.musicData.id}`, `${tagIndex}`))
         });
 
         return tagElements;

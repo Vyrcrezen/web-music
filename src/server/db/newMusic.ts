@@ -1,4 +1,4 @@
-import { validate } from 'class-validator';
+// import { validate } from 'class-validator';
 import { MusicDataValidatable, MusicDataType } from '../../models/frontend/musicDataValidatable';
 import { parseBlobMeta } from '../../util/parseBlobMeta';
 import { MusicTable } from './musicTable';
@@ -8,12 +8,12 @@ import path from 'path';
 export class NewMusic extends MusicDataValidatable {
     pathRootFolder: string;
 
-    constructor(musicData: MusicDataType, userId: string, pathRootFolder: string) {
+    constructor(musicData: MusicDataType, userId: number, pathRootFolder: string) {
         musicData.uploader_id = userId;
         musicData.upload_time = (new Date()).getTime();
 
         super(musicData);
-        validate(this);
+        // validate(this);
 
         this.pathRootFolder = pathRootFolder;
      }
@@ -24,35 +24,28 @@ export class NewMusic extends MusicDataValidatable {
         // Insert names into foreign tables
         // Artist
         await musicTable.insertArtist(this.artist);
-        this.artist_id = ((await musicTable.getArtistIdByName(this.artist))?.data as Array<{ id: number }>)[0].id.toString();
+        this.artist_id = ((await musicTable.getArtistIdByName(this.artist))?.data as Array<{ id: number }>)[0].id;
         // Record Label
         if (this.record_label) {
             await musicTable.insertRecordLabel(this.record_label);
-            this.record_label_id = ((await musicTable.getRecordLabelIdByName(this.record_label))?.data as Array<{ id: number }>)[0].id.toString();
+            this.record_label_id = ((await musicTable.getRecordLabelIdByName(this.record_label))?.data as Array<{ id: number }>)[0].id;
         }
         // Publisher
         if (this.publisher) {
             await musicTable.insertPublisher(this.publisher);
-            this.publisher_id = ((await musicTable.getPublisherIdByName(this.publisher))?.data as Array<{ id: number }>)[0].id.toString();
+            this.publisher_id = ((await musicTable.getPublisherIdByName(this.publisher))?.data as Array<{ id: number }>)[0].id;
         }
         // ------------------------------------
         // Upload music data into music table
-        console.log('inserting music');
         await musicTable.insertMusic(this.getPreparedData());
 
-        this.id = ((await musicTable.getMusicId(this.getPreparedData())).data as Array<{ id: number }>)[0].id.toString();
+        this.id = ((await musicTable.getMusicId(this.getPreparedData())).data as Array<{ id: number }>)[0].id;
         // ------------------------------------
         // Store new tag names in Tag table
-        const tagNames = this.tags.replace(', ', ',').replace(' ,', ',').split(',');
-        console.log('tag names');
-        console.log(this.tags);
-        console.log(tagNames);
+        const tagNames = this.tags.split(',').map(name => name.trim().toLowerCase());
         await musicTable.insertTags(tagNames);
-        console.log('Tags inserted');
         // Retrieve the tag ids from the table
         const rawTagIds = ((await musicTable.getTagIdsByName(tagNames)).data as { id: number }[]);
-        console.log('tagIds');
-        console.log(rawTagIds);
 
         const tagIds = rawTagIds.reduce((acc, idObject) => { acc.push(idObject.id.toString()); return acc; }, new Array<string>);
         // -----------------------------------
@@ -72,8 +65,8 @@ export class NewMusic extends MusicDataValidatable {
 
         const imgBuffer = Buffer.from(this.imageBlob.replace(imageMeta.full, ''), imageMeta.encoding);
 
-        if (!fs.existsSync(path.join(this.pathRootFolder, this.id))) { fs.mkdirSync(path.join(this.pathRootFolder, this.id), { recursive: true }); }
-        fs.writeFileSync(`${path.join(this.pathRootFolder, this.id)}/cover.${imgExtension}`, imgBuffer);
+        if (!fs.existsSync(path.join(this.pathRootFolder, `${this.id}`))) { fs.mkdirSync(path.join(this.pathRootFolder, `${this.id}`), { recursive: true }); }
+        fs.writeFileSync(`${path.join(this.pathRootFolder, `${this.id}`)}/cover.${imgExtension}`, imgBuffer);
 
         // Music processing
         const musicMeta = parseBlobMeta(this.musicBlob);
@@ -87,7 +80,7 @@ export class NewMusic extends MusicDataValidatable {
 
         const musicBuffer = Buffer.from(this.musicBlob.replace(musicMeta.full, ''), musicMeta.encoding);
 
-        if (!fs.existsSync(path.join(this.pathRootFolder, this.id))) { fs.mkdirSync(path.join(this.pathRootFolder, this.id), { recursive: true }); }
-        fs.writeFileSync(`${path.join(this.pathRootFolder, this.id)}/music.${musicExtension}`, musicBuffer);
+        if (!fs.existsSync(path.join(this.pathRootFolder, `${this.id}`))) { fs.mkdirSync(path.join(this.pathRootFolder, `${this.id}`), { recursive: true }); }
+        fs.writeFileSync(`${path.join(this.pathRootFolder, `${this.id}`)}/music.${musicExtension}`, musicBuffer);
      }
 }

@@ -1,6 +1,8 @@
 import mysql, { FieldInfo } from 'mysql';
 import { SqlSyntaxError } from '../../models/error/customError';
 
+export type QueryReturn = { data: []; fields?: FieldInfo[]; };
+
 // Singleton class
 export class MysqlDb {
     private static _instance: MysqlDb;
@@ -41,9 +43,9 @@ export class MysqlDb {
      * 
      * @throws Error
      */
-    sendQuery(queryStatement: string, getFields=false): Promise<{data: [], fields?: FieldInfo[]}> {
+    sendQuery(queryStatement: string, getFields=false): Promise<QueryReturn> {
 
-        let dbPromise: Promise<{data: [], fields?: FieldInfo[]}> = new Promise((resolve, reject) => {
+        let dbPromise: Promise<QueryReturn> = new Promise((resolve, reject) => {
 
             this.pool.getConnection((err, connection) => {
                 if (err) { reject(new SqlSyntaxError(err));}
@@ -52,7 +54,7 @@ export class MysqlDb {
                     connection.release();
                     if(err) { reject(new SqlSyntaxError(err)); }
 
-                    const queryResult: {data: [], fields?: FieldInfo[]} = { data: data }
+                    const queryResult: QueryReturn = { data: data }
                     if (getFields) { queryResult.fields = fields; }
 
                     resolve(queryResult);
