@@ -2,13 +2,32 @@ import React, { useState } from "react";
 import { MusicDataType } from '../../models/frontend/musicDataValidatable'
 
 export function MusicCard({ musicData }: { musicData: MusicDataType }) {
-    const [isHearted, setIsHearted] = useState(false);
+    const [isHearted, setIsHearted] = useState((musicData.is_favourite ? true : false));
+    const hrefRoot = window.location.href.includes('?') ? window.location.href.substring(0, window.location.href.indexOf('?') ) : window.location.href;
+
+    function sendFavouriteUpdate(musicId: number, isFavourite: boolean) {
+        fetch('/user/favourite/music', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(
+                {
+                    musicId: musicId,
+                    isFavourite: isFavourite
+                }
+            )
+        })
+        .then((response) => { return response.json();})
+        .then((data) => { console.log(data); })
+        .catch((err) => { console.log(err); });
+    }
 
     function MusicHeart() {
         let HeartElement: JSX.Element;
         
-        if (isHearted) { HeartElement = <button className="btn p-1"><img src="/img/svg/heart-filled.svg" alt="" onClick={() => setIsHearted(false)} /></button>; }
-        else { HeartElement = <button className="btn p-1"><img src="/img/svg/heart-empty.svg" alt="" onClick={() => setIsHearted(true)} /></button>; }
+        if (isHearted) { HeartElement = <button className="btn p-1"><img src="/img/svg/heart-filled.svg" alt="" onClick={() => { setIsHearted(false); if (musicData.id) {sendFavouriteUpdate(musicData.id, false) } }} /></button>; }
+        else { HeartElement = <button className="btn p-1"><img src="/img/svg/heart-empty.svg" alt="" onClick={() => { setIsHearted(true);  if (musicData.id) {sendFavouriteUpdate(musicData.id, true) } }} /></button>; }
 
         return (HeartElement);
     }
@@ -50,7 +69,7 @@ export function MusicCard({ musicData }: { musicData: MusicDataType }) {
                 {/* <!-- Card Tags --> */}
                 <ul id="mcard-template-tags" className="card-body p-1 my-1 vy-tag-container">
                     {musicData.tags.split(',').map((tagName, index) =>(
-                        <a key={`${musicData.id}-${index}`} href="#">
+                        <a key={`${musicData.id}-${index}`} href={`${hrefRoot}?tagsAny=${tagName}`}>
                             <li  className="d-inline-block rounded-pill fs-small mb-1 py-1 px-2 vy-bg-dark-beige  vy-tag-text">{tagName}</li>
                         </a>
                     ))}
@@ -65,7 +84,7 @@ export function MusicCard({ musicData }: { musicData: MusicDataType }) {
                             Source
                         </a>
                     </p>
-                    <small className="align-self-end">Uploader: <a href="#">{musicData.uploader_name}</a></small>
+                    <small className="align-self-end">Uploader: <a href={`${hrefRoot}?uploaderNameAny=${musicData.uploader_name}`}>{musicData.uploader_name}</a></small>
                 </div>
             </div>
         </div>

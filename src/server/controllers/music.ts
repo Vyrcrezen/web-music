@@ -4,6 +4,7 @@ import { MusicDataType } from "../../models/frontend/musicDataValidatable";
 import { NewMusic } from "../db/newMusic";
 import { validate } from "class-validator";
 import { ReadMusic } from "../db/readMusic";
+import { MusicOptions } from '../../models/musicOptions';
 
 export const newMusicUpload: RequestHandler<{}, {}, {musicData: MusicDataType}, {}> = async (req, res) => {
 
@@ -28,14 +29,24 @@ export const newMusicUpload: RequestHandler<{}, {}, {musicData: MusicDataType}, 
 }
 }
 
-export const getMusicData: RequestHandler<{}, {}, {}, {tags: string}>= async (req, res) => {
+export const getMusicData: RequestHandler<{}, {}, {}, MusicOptions> = async (req, res) => {
 
-    console.log('Get music data called');
-    console.log(path.join(__dirname, '../../../data/MusicCard'));
+    // console.log('Get music data called');
+    // console.log(path.join(__dirname, '../../../data/MusicCard'));
+
     const readMusic = new ReadMusic(path.join(__dirname, '../../../data/MusicCard'));
 
-    const musicResult = await readMusic.getAllMusic();
+    let musicResult: MusicDataType[];
 
-    console.log(req.query.tags);
+    if (req.query.omitLoadingMusic) {
+        musicResult = [];
+    }
+    else {
+        musicResult = await readMusic.getAllMusic(req.query);
+    }
+    
+
+    // console.log('req.query');
+    // console.log(req.query);
     res.status(201).json(musicResult);
 }

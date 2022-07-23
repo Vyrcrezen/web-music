@@ -5,6 +5,37 @@ import { SqlSyntaxError, AlreadyTakenError } from '../../models/error/customErro
 import { ErrorResponse } from '../../models/errorResponse';
 import { UserTable } from "../db/userTable";
 
+// favouriteMusic
+export const favouriteMusic: RequestHandler<any, any, {musicId: number, isFavourite: boolean}, any> = async (req, res) => {
+
+    console.log('Setting favourite!');
+    // console.log(req.session);
+    // console.log(req.body);
+
+    // console.log(typeof req.body.isFavourite);
+    // console.log(typeof req.body.musicId);
+
+    if ( typeof req.body.isFavourite !== 'boolean' || typeof req.body.musicId !== 'number') {
+        res.status(400).json({ info: 'Badly configured request body!'});
+    }
+    else {
+        const {passport: passportData } = req.session;
+    
+        if (!passportData) { throw new Error('Passport is unavailable in loginUserAccount'); }
+        if (!passportData.user) { throw new Error('Passport could not retrieve user id in loginUserAccount'); }
+    
+        let dbResponse;
+
+        if (req.body.isFavourite) { dbResponse = await UserTable.getInstance().insertFavouriteMusic(+passportData.user.id, req.body.musicId); }
+        else { dbResponse = await UserTable.getInstance().deleteFavouriteMusic(+passportData.user.id, req.body.musicId); }
+    
+        console.log(dbResponse);
+
+        res.status(201).json({ info: 'Your decision has been recorded in the database!'});
+    }
+
+};
+
 export const loginUserAccount: RequestHandler<any, any, {username: unknown, password: unknown}, any> = async (req, res) => {
 
     console.log('Logging in');

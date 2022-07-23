@@ -38,6 +38,14 @@ export class UserTable {
         return queryResult;
     }
 
+    async insertFavouriteMusic(userId: number, musicId: number) {
+        return MysqlDb.getInstance().sendQuery(`INSERT INTO user_favourite(user_id, music_id) VALUES ('${userId}','${musicId}')`);
+    }
+
+    async deleteFavouriteMusic(userId: number, musicId: number) {
+        return MysqlDb.getInstance().sendQuery(`DELETE FROM user_favourite WHERE user_id = '${userId}' AND music_id='${musicId}'`);
+    }
+
     insertNewUser(userData: { user_name: string, user_email: string, user_password: string }) {
         const currentTime = (new Date).getTime();
 

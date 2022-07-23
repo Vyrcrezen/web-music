@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { getDevTestingPage } from "../controllers/hiddenPages";
+import { getDevTestingPage } from "../controllers/managedPages";
 
 export const router = Router();
 

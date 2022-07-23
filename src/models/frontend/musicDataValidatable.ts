@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, Length } from "class-validator";
+import { IsBoolean, IsNumber, IsOptional, Length } from "class-validator";
 import { IsBlobOfType } from "../../decorators/isBlobOfType";
 
 export type MusicDataType = {
@@ -20,8 +20,9 @@ export type MusicDataType = {
     uploader_name?: string;
     upload_time?: number;
     id?: number;
+    is_favourite?: boolean;
 
-    [prop: string | symbol]: string | symbol | number | undefined;
+    [prop: string | symbol]: string | symbol | number | boolean | undefined;
 }
 
 export class MusicDataValidatable {
@@ -59,7 +60,7 @@ export class MusicDataValidatable {
     // protected price?: number;
     // @IsOptional()
     // @IsIn(['HUF', 'USD', 'EUR'])
-    // protected currency?: string;
+    // protected currency?: string; is_favourite
     @IsOptional()
     @IsNumber({}, { message: "uploader_id must be a number!" })
     protected uploader_id?: number;
@@ -71,6 +72,9 @@ export class MusicDataValidatable {
     @IsOptional()
     @IsNumber({}, { message: "id must be a number!" })
     protected id?: number;
+    @IsOptional()
+    @IsBoolean( { message: "is_favourite must be a boolean!" })
+    protected is_favourite?: boolean;
 
     constructor( musicData: MusicDataType ) {
         this.imageBlob = musicData.imageBlob;
@@ -95,7 +99,7 @@ export class MusicDataValidatable {
             if (musicData.publisher_id) { this.publisher_id = musicData.publisher_id; }
             if (musicData.id) { this.id = musicData.id; }
             if (musicData.uploader_name) { this.uploader_name = musicData.uploader_name; }
-            
+            if (musicData.is_favourite) { this.is_favourite = musicData.is_favourite; }
         }
     }
 
@@ -122,6 +126,7 @@ export class MusicDataValidatable {
             record_label_id: this.record_label_id,
             publisher_id: this.publisher_id,
             id: this.id,
+            is_favourite: this.is_favourite
         };
 
         return preparedData;
