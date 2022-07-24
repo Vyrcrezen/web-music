@@ -11,7 +11,7 @@ SELECT
     link,
     num_played,
     avg_rating,
-    COALESCE(favourite_music.music_id, 0) as is_favourite
+    LEAST(1, COALESCE(favourite_music.user_id, 0)) AS is_favourite
 FROM
     music
 INNER JOIN(
@@ -31,7 +31,7 @@ INNER JOIN user_account ON user_account.id = music.uploader_id
 INNER JOIN artist ON artist.id = music.artist_id
 LEFT JOIN record_label ON record_label.id = music.record_label_id
 LEFT JOIN publisher ON publisher.id = music.publisher_id
-LEFT JOIN ( SELECT music_id FROM user_favourite WHERE user_favourite.user_id = user_id ) AS favourite_music ON favourite_music.music_id = music.id
-HAVING user_account.user_name IN ('Midnight')
+LEFT OUTER JOIN ( SELECT music_id, user_id FROM user_favourite WHERE user_favourite.user_id = 1 ) AS favourite_music ON favourite_music.music_id = music.id
+HAVING user_account.user_name IN ('Midnight', 'Elen') AND is_favourite = 1
 ORDER BY music.upload_time DESC
 LIMIT 8

@@ -22,18 +22,13 @@ export const newMusicUpload: RequestHandler<{}, {}, {musicData: MusicDataType}, 
         }
         else {
             await newMusic.saveNewMusic();
-            // console.log(newMusic.getPreparedData());
     
             res.status(201).json({ message: 'Recieved!' });
         }
-}
+    }
 }
 
 export const getMusicData: RequestHandler<{}, {}, {}, MusicOptions> = async (req, res) => {
-
-    // console.log('Get music data called');
-    // console.log(path.join(__dirname, '../../../data/MusicCard'));
-
     const readMusic = new ReadMusic(path.join(__dirname, '../../../data/MusicCard'));
 
     let musicResult: MusicDataType[];
@@ -42,11 +37,14 @@ export const getMusicData: RequestHandler<{}, {}, {}, MusicOptions> = async (req
         musicResult = [];
     }
     else {
-        musicResult = await readMusic.getAllMusic(req.query);
-    }
-    
+        const resolvedUserId =  +(req.session.passport?.user?.id || 0);
 
-    // console.log('req.query');
-    // console.log(req.query);
-    res.status(201).json(musicResult);
+        if (req.query.myFavourites && resolvedUserId === 0) {
+            res.status(400).json([]);
+        }
+        else {
+            musicResult = await readMusic.getAllMusic(req.query, resolvedUserId);
+            res.status(201).json(musicResult);
+        }
+    }
 }

@@ -70,6 +70,12 @@ export class MusicTable {
     async getTagIdsByName(tagNames: string[]) {
         const nameConditions = tagNames.map(tag => `name = '${tag}'`);
         if (nameConditions.length === 0) { return { data: [] } as QueryReturn; }
+
+        console.log('getTagIdsByName');
+        console.log('tagNames'); console.log(tagNames);
+        console.log('nameConditions'); console.log(nameConditions);
+        console.log(`SELECT id FROM tag WHERE ${nameConditions.join(' OR ')};`);
+
         return MysqlDb.getInstance().sendQuery(`SELECT id FROM tag WHERE ${nameConditions.join(' OR ')};`);
     }
 

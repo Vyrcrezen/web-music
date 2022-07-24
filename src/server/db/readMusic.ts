@@ -12,7 +12,7 @@ export class ReadMusic  {
         this.pathRootFolder = pathRootFolder;
     }
 
-    async getAllMusic(musicOptions: MusicOptions): Promise<MusicDataType[]> {
+    async getAllMusic(musicOptions: MusicOptions, favOfUserId: number): Promise<MusicDataType[]> {
         const musicData = new Array<MusicDataType>;
 
         const mysqlDb = MysqlDb.getInstance();
@@ -25,8 +25,10 @@ export class ReadMusic  {
         if (musicOptions.uploaderNameAny) {
             havingParams.push(`user_account.user_name IN (${musicOptions.uploaderNameAny.split(',').map(uploaderName => `'${uploaderName}'`).join(',')})`);
         }
-        if (musicOptions.myFavourites) {
-            havingParams.push(`is_favourite NOT IN(0)`);
+        if (typeof musicOptions.myFavourites === 'boolean') {
+            console.log(musicOptions.myFavourites); console.log('musicOptions.myFavourites');
+            // havingParams.push(`is_favourite NOT IN(0)`); favourite_music.user_id AS fav_user_id
+            havingParams.push(`is_favourite = ${musicOptions.myFavourites === true ? 1 : 0}`);
         }
 
         const selectMusicId = 
@@ -43,7 +45,7 @@ export class ReadMusic  {
             + `    link, \r\n`
             + `    num_played, \r\n`
             + `    avg_rating, \r\n`
-            + `    COALESCE(favourite_music.music_id, 0) as is_favourite \r\n`
+            + `    LEAST(1, COALESCE(favourite_music.user_id, 0)) AS is_favourite \r\n`
             + `FROM \r\n`
             + `    music \r\n`
             + `INNER JOIN( \r\n`
@@ -62,10 +64,15 @@ export class ReadMusic  {
             + `INNER JOIN artist ON artist.id = music.artist_id \r\n`
             + `LEFT JOIN record_label ON record_label.id = music.record_label_id \r\n`
             + `LEFT JOIN publisher ON publisher.id = music.publisher_id \r\n`
-            + `LEFT JOIN ( SELECT music_id FROM user_favourite WHERE user_favourite.user_id = user_id ) AS favourite_music ON favourite_music.music_id = music.id \r\n`
+            + `LEFT OUTER JOIN ( SELECT music_id, user_id FROM user_favourite WHERE user_favourite.user_id = ${favOfUserId || 0} ) AS favourite_music ON favourite_music.music_id = music.id \r\n`
             + `${havingParams.length > 0 ? `HAVING ${havingParams.join(' AND ')}` :``} \r\n`
             + `ORDER BY music.upload_time DESC \r\n`
             + `LIMIT ${musicOptions.limit ? Math.min(musicOptions.limit, 8) : 8 } \r\n`
+
+        console.log('selectMusicId');
+        console.log(selectMusicId);
+
+        // Check tag pairing code!!
 
         // console.log('selectMusicId');
         // console.log(selectMusicId);

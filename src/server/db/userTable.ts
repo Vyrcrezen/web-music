@@ -39,7 +39,12 @@ export class UserTable {
     }
 
     async insertFavouriteMusic(userId: number, musicId: number) {
-        return MysqlDb.getInstance().sendQuery(`INSERT INTO user_favourite(user_id, music_id) VALUES ('${userId}','${musicId}')`);
+        return MysqlDb.getInstance().sendQuery(
+             `INSERT INTO  user_favourite(user_id, music_id) \r\n`
+            +`SELECT '${userId}', '${musicId}' FROM DUAL \r\n`
+            +`WHERE NOT EXISTS (SELECT user_id, music_id FROM user_favourite \r\n`
+            +`  WHERE user_id='${userId}' AND music_id='${musicId}' LIMIT 1) `
+        );
     }
 
     async deleteFavouriteMusic(userId: number, musicId: number) {

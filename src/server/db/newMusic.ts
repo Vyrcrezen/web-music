@@ -47,10 +47,16 @@ export class NewMusic extends MusicDataValidatable {
         // Retrieve the tag ids from the table
         const rawTagIds = ((await musicTable.getTagIdsByName(tagNames)).data as { id: number }[]);
 
+        console.log('tagNames'); console.log(tagNames);
+        console.log('musicTable.getInsertTags(tagNames)'); console.log(musicTable.getInsertTags(tagNames));
+        console.log('rawTagIds'); console.log(rawTagIds);
+
         const tagIds = rawTagIds.reduce((acc, idObject) => { acc.push(idObject.id.toString()); return acc; }, new Array<string>);
         // -----------------------------------
         // Insert Tag pairings
         await musicTable.insertTagPairings(tagIds, this.id);
+
+        console.log('musicTable.getInsertTagPairings(tagIds, this.id)'); console.log(musicTable.getInsertTagPairings(tagIds, this.id));
 
         // Image processing
         const imageMeta = parseBlobMeta(this.imageBlob);

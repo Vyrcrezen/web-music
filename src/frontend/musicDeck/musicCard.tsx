@@ -6,28 +6,34 @@ export function MusicCard({ musicData }: { musicData: MusicDataType }) {
     const hrefRoot = window.location.href.includes('?') ? window.location.href.substring(0, window.location.href.indexOf('?') ) : window.location.href;
 
     function sendFavouriteUpdate(musicId: number, isFavourite: boolean) {
-        fetch('/user/favourite/music', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(
-                {
-                    musicId: musicId,
-                    isFavourite: isFavourite
-                }
-            )
-        })
-        .then((response) => { return response.json();})
-        .then((data) => { console.log(data); })
-        .catch((err) => { console.log(err); });
+        return new Promise<boolean>((resolve, _) => {
+            fetch('/user/favourite/music', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(
+                    {
+                        musicId: musicId,
+                        isFavourite: isFavourite
+                    }
+                )
+            })
+            .then((response) => {
+                console.log(response);
+                if (response.status !== 201) { console.log(response.status); resolve(false); }
+                return response.json();
+            })
+            .then(() => { resolve(true); })
+            .catch(() => { resolve(false); });
+        }) 
     }
 
     function MusicHeart() {
         let HeartElement: JSX.Element;
         
-        if (isHearted) { HeartElement = <button className="btn p-1"><img src="/img/svg/heart-filled.svg" alt="" onClick={() => { setIsHearted(false); if (musicData.id) {sendFavouriteUpdate(musicData.id, false) } }} /></button>; }
-        else { HeartElement = <button className="btn p-1"><img src="/img/svg/heart-empty.svg" alt="" onClick={() => { setIsHearted(true);  if (musicData.id) {sendFavouriteUpdate(musicData.id, true) } }} /></button>; }
+        if (isHearted) { HeartElement = <button className="btn p-1"><img src="/img/svg/heart-filled.svg" alt="" onClick={() => { if (musicData.id) { sendFavouriteUpdate(musicData.id, false).then(result => { if(result) { setIsHearted(false); } }); } }} /></button>; }
+        else { HeartElement = <button className="btn p-1"><img src="/img/svg/heart-empty.svg" alt="" onClick={() => { if (musicData.id) { sendFavouriteUpdate(musicData.id, true).then(result => { if(result) { setIsHearted(true); } }); } }} /></button>; }
 
         return (HeartElement);
     }
